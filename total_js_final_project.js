@@ -180,9 +180,3 @@ function endFlash() {
   noButton.style('border', '3px solid rgb(0, 0, 255)'); // Set the border to blue
 }
 
-
-  // 修改 "No" 按钮的样式
-  noButton.style('background-color', 'white'); // 按钮背景变为白色
-  noButton.style('color', 'rgb(0, 0, 255)'); // 按钮文字变为蓝色
-  noButton.style('border', '3px solid rgb(0, 0, 255)'); // 边框变为蓝色
-}
