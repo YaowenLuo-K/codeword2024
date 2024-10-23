@@ -1,6 +1,5 @@
-let message = "Hey, isn't it time for an upgrade?";  
+let message = "Hey, isn't it time for an upgrade?";   
 let index = 0; // Index of the current character being displayed
-let typingSpeed = 100; 
 let lastMillis = 0; 
 let yesButtons = []; // Array to store multiple "Yes" buttons
 let buttonWidth = 120; 
@@ -15,15 +14,18 @@ let flashDuration = 200; // Flash duration in milliseconds
 let shakeDuration = 500; // Shake duration in milliseconds
 let shakeStartTime = 0; // Stores the start time of the shake
 let noClickCount = 0; // Tracks the number of "No" button clicks
-let maxNoClicks = 5; 
+let maxNoClicks = 3; 
 let maxButtonSize = 200; 
 let Sound1;
 let Sound2; 
+let Sound3; 
+let upgradeMessage = "Upgrade successfully,further upgrade?";
 
 function preload(){
   PressStart2P = loadFont('data/PressStart2P-Regular.ttf');  
   Sound1 = loadSound('data/powerUp.wav'); 
   Sound2 = loadSound('data/2.mp3');
+  Sound3=loadSound('data/3.mp3');
 }
 
 function setup() {
@@ -31,6 +33,7 @@ function setup() {
   textFont(PressStart2P); 
   textSize(25); 
 
+  
   // Create the initial "Yes" button
   createYesButton(width / 2 - buttonWidth - 190, height / 2 + 70);
 
@@ -47,7 +50,7 @@ function draw() {
   
   // Add first line text
   textSize(10); 
-  text("Try to click the 'No' button, otherwise you will be stuck in a loop.", width / 2, height / 2 - 50); 
+  text("When your software needs to be upgraded,please make your choice.", width / 2, height / 2 - 50); 
   textSize(25); // Restore the size for the main text
   fill(textColor); 
   textAlign(CENTER, CENTER); 
@@ -60,7 +63,7 @@ function draw() {
     }
   }
 
-  // Handle screen shaking effect if it's active（this effect ask Chatgpt）
+  //shaking effect（this effect ask Chatgpt）
   if (shaking) {
     let currentTime = millis(); // Get the current time
     if (currentTime - shakeStartTime < shakeDuration) {
@@ -74,7 +77,7 @@ function draw() {
   text(message.substring(0, index), width / 2, height / 2);
   // Check time to determine if the index should be increased 
   let currentTime = millis(); // time in milliseconds
-  if (millis() > lastMillis + 100) {//Check if 100 milliseconds have passed
+  if (millis() > lastMillis + 50) {//Check if 50 milliseconds have passed
 		index = index + 1;//display next word
     lastMillis = millis();// Update the last time
   }
@@ -83,8 +86,8 @@ function draw() {
   for (let i = 1; i < yesButtons.length; i++) { // Start from the second button
     let btn = yesButtons[i];
     // Limit the maximum size and ensure the buttons don't exceed the boundaries
-    let newWidth = constrain(btn.size().width + 6, 0, maxButtonSize);
-    let newHeight = constrain(btn.size().height + 2, 0, maxButtonSize);
+    let newWidth = constrain(btn.size().width + 14, 0, maxButtonSize);
+    let newHeight = constrain(btn.size().height + 6, 0, maxButtonSize);
     btn.size(newWidth, newHeight); // Update the button size
   }
 }
@@ -101,7 +104,9 @@ function createYesButton(x, y) {
 
 //click 'yes' Reload the current page
 function reloadPage() {
-  location.reload(); 
+  message = upgradeMessage; 
+  index = 0;
+  Sound3.play();
 }
 
 // Update the canvas size when the window is resized
@@ -132,24 +137,24 @@ function noClicked() {
   textColor = [255, 255, 255]; // Keep the text white for now
 
   //SOUND
-  if (noClickCount === 6) {
+  if (noClickCount === 4) {
     Sound2.loop(); 
   } else {
     Sound1.play(); 
   }
 
-  // Generate a new "Yes" button for the first 5 clicks（gpt）
+  // Generate a new "Yes" button for the first 2 clicks（gpt）
   if (noClickCount <= maxNoClicks) {
     let newX = random(0, windowWidth - buttonWidth); 
     let newY = random(0, windowHeight - buttonHeight); 
     createYesButton(newX, newY); // Create the new "Yes" button
   }
-  // After the 6th click, start generating "Yes" buttons continuously
+  // After the 2th click, start generating "Yes" buttons continuously
   if (noClickCount === maxNoClicks + 1) {
    createUnlimitedYesButtons();
   }
 }
-// Function to continuously create "Yes" buttons
+// Automatically generate buttons "Yes" buttons
 function createUnlimitedYesButtons() {
   // Use setInterval to keep generating new "Yes" buttons
   setInterval(() => {
